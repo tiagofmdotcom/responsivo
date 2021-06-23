@@ -1,0 +1,28 @@
+{
+	"name": "responsivo",
+	"version": "0.0.1",
+	"description": "A web extension for firefox allowing to view multiple view widths at once",
+	"manifest_version": 2,
+	"permissions": [
+		"<all_urls>",
+		"activeTab",
+		"http://*/*",
+		"https://*/*",
+		"storage",
+		"webNavigation",
+		"webRequest",
+		"webRequestBlocking"
+	],
+	"browser_action": {
+		"default_title": "responsivo",
+		"default_icon": {
+			"128": "128.png"
+		},
+		"browser_style": false
+	},
+	"background": {
+		"scripts": [
+			"background.js"
+		]
+	}
+}
