@@ -5,7 +5,7 @@
     "scripts": {
         "web-ext": "npx web-ext run -s .",
         "watch": "npx esbuild app.tsx --outdir=. --bundle --watch & npx esbuild background.ts --outdir=. --bundle --watch",
-        "build": "esbuild app.tsx --bundle --outdir=. && esbuild background.ts --bundle --outdir=."
+        "build": "esbuild app.tsx --bundle --outdir=. && esbuild background.ts --bundle --outdir=. && npx web-ext build"
     },
     "author": "Michael Lill <michael.lill@posteo.de>",
     "license": "MIT",
