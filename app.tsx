@@ -10,9 +10,9 @@ function isNormalInteger(str: string) {
     return n !== Infinity && String(n) === str && n >= 0;
 }
 
-const root = () => {
-    const initialValue = '480, 768, 1024';
+const initialDeviceWidths = '480, 768, 1024';
 
+const root = () => {
     useEffect(() => {
         browser.storage.local.get('responsivo:viewWidths').then(value => {
             if (value['responsivo:viewWidths']) {
@@ -21,7 +21,7 @@ const root = () => {
         });
     }, []);
 
-    const [deviceWidths, setDeviceWidths] = useState(initialValue);
+    const [deviceWidths, setDeviceWidths] = useState(initialDeviceWidths);
 
     const onChangeDeviceWidths = (event: any) => {
         const value = event.target.value;
@@ -30,6 +30,19 @@ const root = () => {
         })
         setDeviceWidths(value);
     };
+
+    const [currentLocation, setCurrentLocation] = useState(location.toString());
+
+    /**
+     * listen to location changes
+     */
+    useEffect(() => {
+        const listener = () => {
+            setCurrentLocation(location.toString());
+        }
+        window.addEventListener('popstate', listener);
+        return () => window.removeEventListener('popstate', listener);
+    }, []);
 
     return (
         <div style={{ height: '98vh', display: 'flex', flexDirection: 'column', fontFamily: 'monospace' }}>
@@ -43,7 +56,7 @@ const root = () => {
                     .map(x => x.trim())
                     .filter(isNormalInteger)
                     .map(x => parseInt(x))
-                    .map(width => <Device key={width} width={width} />)}
+                    .map(width => <Device key={width} width={width} location={currentLocation} />)}
             </div>
         </div>);
 };

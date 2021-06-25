@@ -1,6 +1,6 @@
 {
     "name": "responsivo",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "A web extension for firefox allowing to view multiple view widths at once",
     "scripts": {
         "web-ext": "npx web-ext run -s .",

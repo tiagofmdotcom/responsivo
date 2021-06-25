@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
 enum EventType {
-    DeviceScroll = 'resposivo:device:scroll'
+    DeviceScroll = 'resposivo:device:scroll',
 }
 
 class DeviceScrollEvent extends Event {
@@ -18,55 +18,84 @@ let lastReceivedScrollEvent: {
     now: 0,
 };
 
-export const Device = ({ width }: { width: number; }): JSX.Element => {
-    const iFrameRef = useRef<HTMLIFrameElement>();
+const addEventListeners = (iFrame: HTMLIFrameElement, width: number) => {
+    /**
+     * setup listener for scroll events
+     * send event DeviceScroll to siblings
+     */
+    const contentWindow = iFrame.contentWindow;
+    const listenerOnScroll = () => {
+        const scrollEvent = new DeviceScrollEvent(EventType.DeviceScroll);
+        scrollEvent.data = {
+            scrollPosition: (contentWindow.scrollY / (contentWindow.document.documentElement.scrollHeight - contentWindow.innerHeight)),
+            width: width,
+        }
+        if (lastReceivedScrollEvent?.event?.data?.width === width || (Date.now() - lastReceivedScrollEvent.now > 250)) {
+            document.dispatchEvent(scrollEvent);
+        }
+    };
+    contentWindow.addEventListener('scroll', listenerOnScroll);
 
-    useEffect(() => {
-        const contentWindow = iFrameRef.current.contentWindow;
-        const listenerOnScroll = () => {
-            const scrollEvent = new DeviceScrollEvent(EventType.DeviceScroll);
-            scrollEvent.data = {
-                scrollPosition: (contentWindow.scrollY / (contentWindow.document.documentElement.scrollHeight - contentWindow.innerHeight)),
-                width: width,
-            }
-            if (lastReceivedScrollEvent?.event?.data?.width === width || (Date.now() - lastReceivedScrollEvent.now > 250)) {
-                document.dispatchEvent(scrollEvent);
-            }
+    /**
+     * listen to scroll events of siblings
+     */
+    const listenerOnScrollEvent = (event: DeviceScrollEvent) => {
+        lastReceivedScrollEvent = {
+            now: Date.now(),
+            event
         };
-        contentWindow.addEventListener('scroll', listenerOnScroll);
-        return () => contentWindow.removeEventListener('scroll', listenerOnScroll);
-    }, []);
 
+        // ignore event from self
+        if (event.data.width === width) {
+            return;
+        }
+
+        scrollToPosition(iFrame, event);
+    };
+    document.addEventListener(EventType.DeviceScroll, listenerOnScrollEvent as any);
+
+    /**
+     * try detecting location changes of iframe contentwindow
+     * TODO: figure out why setTimeout seems to be necessary
+     */
+    iFrame.contentWindow.window.addEventListener('unload', () => setTimeout(() => {
+        if (iFrame.contentWindow.location.toString() === window.location.toString()) {
+            return;
+        }
+        window.history.pushState({}, null, iFrame.contentWindow.location.toString());
+        window.dispatchEvent(new Event('popstate'));
+    }, 0));
+}
+
+export const Device = ({ width, location }: { width: number, location: string }): JSX.Element => {
+    const divRef = useRef<HTMLDivElement>();
+
+    /**
+     * recreating iframes on every rerender because 
+     * of inconsitent behaviour of event listeners
+     * when following the react way
+     */
     useEffect(() => {
-        const listenerOnScrollEvent = (event: DeviceScrollEvent) => {
-            lastReceivedScrollEvent = {
-                now: Date.now(),
-                event
-            };
+        divRef.current.children.namedItem('iframe')?.remove();
+        const iFrame = document.createElement('iframe');
+        iFrame.name = 'iframe';
+        iFrame.setAttribute('loading', 'lazy');
+        iFrame.width = width.toString();
+        iFrame.setAttribute('style', 'height: 100%; border: 1px solid black');
+        iFrame.src = location;
+        divRef.current.appendChild(iFrame);
+        addEventListeners(iFrame, width);
+    });
 
-            // ignore event from self
-            if (event.data.width === width) {
-                return;
-            }
-
-            scrollToPosition(iFrameRef, event);
-        };
-        document.addEventListener(EventType.DeviceScroll, listenerOnScrollEvent as any);
-        return () => document.removeEventListener(EventType.DeviceScroll, listenerOnScrollEvent as any);
-    }, []);
-
-    return <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    return <div ref={divRef} style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ textAlign: 'center', fontSize: '2rem' }}>
             {width}
         </div>
-        <iframe loading="lazy" ref={iFrameRef} frameBorder={0} width={width} style={{ height: '100%' }} src={location.toString()} />
-
     </div>;
 };
 
-function scrollToPosition(iFrameRef: React.MutableRefObject<HTMLIFrameElement>, event: DeviceScrollEvent) {
-    const contentWindow = iFrameRef.current.contentWindow;
+function scrollToPosition(iFrame: HTMLIFrameElement, event: DeviceScrollEvent) {
+    const contentWindow = iFrame.contentWindow;
     const newPosition = Math.floor((contentWindow.document.documentElement.scrollHeight - contentWindow.innerHeight) * event.data.scrollPosition);
     contentWindow.scrollTo(0, newPosition);
 }
-

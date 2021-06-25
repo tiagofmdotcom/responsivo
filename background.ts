@@ -7,7 +7,7 @@ function setHeader(event: any) {
         "referrer-policy"
     ];
     return new Promise((resolve) => {
-        const byRemoveHeaders = (x:any) => !removeHeaders.includes(x.name.toLowerCase())
+        const byRemoveHeaders = (x: any) => !removeHeaders.includes(x.name.toLowerCase())
         resolve({ responseHeaders: event.responseHeaders.filter(byRemoveHeaders) });
     })
 }
@@ -16,7 +16,7 @@ browser.browserAction.onClicked.addListener(function (tab) {
     browser.webRequest.onHeadersReceived.removeListener(setHeader);
     browser.webRequest.onHeadersReceived.addListener(
         setHeader,
-        { urls: [tab.url], types: ["sub_frame"]},
+        { urls: ["<all_urls>"], types: ["sub_frame"] },
         ["blocking", "responseHeaders"]
     );
 
