@@ -38,10 +38,8 @@ export const Device = ({ width, location }: { width: number, location: string })
         // or similar instead of setInterval
         const intervalHandle = setInterval(() => {
             try {
-
-                const scrollHeightTolerance = 100;
                 const borderColor = iFrame.contentWindow.document.body.scrollWidth > parseInt(iFrame.width) ? 'red' : 'black';
-                const style = `height: ${iFrame.contentWindow.document.body.scrollHeight + scrollHeightTolerance}px; border: 1px solid ${borderColor};`;
+                const style = `height: ${iFrame.contentWindow.document.body.scrollHeight}px; border: 1px solid ${borderColor};`;
                 iFrame.setAttribute('style', style);
             } catch {
                 clearInterval(intervalHandle);
