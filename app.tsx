@@ -45,12 +45,12 @@ const root = () => {
     }, []);
 
     return (
-        <div style={{ height: '98vh', display: 'flex', flexDirection: 'column', fontFamily: 'monospace' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', fontFamily: 'monospace' }}>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <input type="text" style={{ width: '50ch' }} value={deviceWidths} onChange={onChangeDeviceWidths} />
             </div>
 
-            <div style={{ display: 'flex', flexGrow: 1 }}>
+            <div style={{ display: 'flex' }}>
                 {deviceWidths
                     .split(',')
                     .map(x => x.trim())

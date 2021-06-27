@@ -64,7 +64,25 @@ const addEventListeners = (iFrame: HTMLIFrameElement, width: number) => {
         }
         window.history.pushState({}, null, iFrame.contentWindow.location.toString());
         window.dispatchEvent(new Event('popstate'));
-    }, 0));
+    }, 10));
+}
+
+function resizeIFrameToFitContentHeight() {
+    const iFrame = this as HTMLIFrameElement;
+
+    // TODO listen to domContentChange of iframe contentWindow
+    // or similar instead of setInterval
+    const intervalHandle = setInterval(() => {
+        try {
+
+            const scrollHeightTolerance = 100;
+            const borderColor = iFrame.contentWindow.document.body.scrollWidth > parseInt(iFrame.width) ? 'red' : 'black';
+            const style = `height: ${iFrame.contentWindow.document.body.scrollHeight + scrollHeightTolerance}px; border: 1px solid ${borderColor};`;
+            iFrame.setAttribute('style', style);
+        } catch {
+            clearInterval(intervalHandle);
+        }
+    }, 2000);
 }
 
 export const Device = ({ width, location }: { width: number, location: string }): JSX.Element => {
@@ -81,7 +99,9 @@ export const Device = ({ width, location }: { width: number, location: string })
         iFrame.name = 'iframe';
         iFrame.setAttribute('loading', 'lazy');
         iFrame.width = width.toString();
-        iFrame.setAttribute('style', 'height: 100%; border: 1px solid black');
+        iFrame.height = '500';
+        iFrame.addEventListener('load', resizeIFrameToFitContentHeight);
+        iFrame.scrolling = 'no';
         iFrame.src = location;
         divRef.current.appendChild(iFrame);
         addEventListeners(iFrame, width);

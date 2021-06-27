@@ -8,6 +8,6 @@ Inspired by Emmet Re:View.
 - npm run build && npm run package
 
 ## Future Ideas
-- make use of firefox screenshot api
 - provide list of commonly used devices
 - sync clicks in iframes
+- ability to change useragent (mobile/desktop)
