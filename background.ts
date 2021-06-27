@@ -1,10 +1,13 @@
-function setHeader(event: any) {
+/**
+ * remove security headers allowing
+ * site to be displayed in iframe
+ * @param event 
+ * @returns 
+ */
+function removeSecurityHeaders(event: any) {
     const removeHeaders = [
         "content-security-policy",
         "x-frame-options",
-        "x-xss-protection",
-        "x-content-type-options",
-        "referrer-policy"
     ];
     return new Promise((resolve) => {
         const byRemoveHeaders = (x: any) => !removeHeaders.includes(x.name.toLowerCase())
@@ -13,13 +16,13 @@ function setHeader(event: any) {
 }
 
 browser.browserAction.onClicked.addListener(function (tab) {
-    browser.webRequest.onHeadersReceived.removeListener(setHeader);
+    browser.webRequest.onHeadersReceived.removeListener(removeSecurityHeaders);
     if (!tab.url) {
         return;
     }
     const tabURL = new URL(tab.url);
     browser.webRequest.onHeadersReceived.addListener(
-        setHeader,
+        removeSecurityHeaders,
         { urls: [`${tabURL.protocol}//${tabURL.host}/*`], types: ["sub_frame"], tabId: tab.id },
         ["blocking", "responseHeaders"]
     );
