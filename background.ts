@@ -14,14 +14,13 @@ function setHeader(event: any) {
 
 browser.browserAction.onClicked.addListener(function (tab) {
     browser.webRequest.onHeadersReceived.removeListener(setHeader);
-    if(!tab.url)
-    {
+    if (!tab.url) {
         return;
     }
     const tabURL = new URL(tab.url);
     browser.webRequest.onHeadersReceived.addListener(
         setHeader,
-        { urls: [`${tabURL.protocol}//${tabURL.host}/*`], types: ["sub_frame"] },
+        { urls: [`${tabURL.protocol}//${tabURL.host}/*`], types: ["sub_frame"], tabId: tab.id },
         ["blocking", "responseHeaders"]
     );
 
