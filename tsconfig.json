@@ -4,5 +4,6 @@
         "noImplicitAny": true,
         "sourceMap": true,
         "esModuleInterop": true,
+        "target": "ES6"
     }
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Device } from './Device';
+import { UserAgent } from './UserAgent';
 
 document.documentElement.innerHTML = '<body><div id="responsivo" /></body>';
 document.getElementsByTagName('body')[0].setAttribute('style', 'margin:0');
@@ -17,6 +18,11 @@ const root = () => {
         browser.storage.local.get('responsivo:viewWidths').then(value => {
             if (value['responsivo:viewWidths']) {
                 setDeviceWidths(value['responsivo:viewWidths'])
+            }
+        });
+        browser.storage.local.get('responsivo:userAgent').then(value => {
+            if (value['responsivo:userAgent']) {
+                setUserAgent(value['responsivo:userAgent']);
             }
         });
     }, []);
@@ -44,10 +50,26 @@ const root = () => {
         return () => window.removeEventListener('popstate', listener);
     }, []);
 
+    const [userAgent, setUserAgent] = useState(UserAgent.Mobile);
+
+    browser.runtime.sendMessage({
+        action: 'responsivo:setUserAgent',
+        data: userAgent
+    });
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', fontFamily: 'monospace' }}>
             <div style={{ display: 'flex', justifyContent: 'center' }}>
                 <input type="text" style={{ width: '50ch' }} value={deviceWidths} onChange={onChangeDeviceWidths} />
+                <select value={userAgent} onChange={(event) => {
+                    browser.storage.local.set({
+                        'responsivo:userAgent': event.target.value
+                    })
+                    return setUserAgent(event.target.value as UserAgent);
+                }}>
+                    <option value={UserAgent.Mobile}>UserAgent: Mobile</option>
+                    <option value={UserAgent.Desktop}>UserAgent: Desktop</option>
+                </select>
             </div>
 
             <div style={{ display: 'flex' }}>
