@@ -1,5 +1,5 @@
 # responsivo
-A web extension for firefox. Allows viewing multiple view widths simultaneously.
+A web extension. Displays multiple view widths at once.
 
 Inspired by Emmet Re:View.
 

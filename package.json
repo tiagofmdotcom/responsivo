@@ -1,7 +1,7 @@
 {
     "name": "responsivo",
-    "version": "0.0.4",
-    "description": "A web extension for firefox allowing to view multiple view widths at once",
+    "version": "0.0.5",
+    "description": "A web extension. Displays multiple view widths at once.",
     "scripts": {
         "web-ext": "npx web-ext run -s .",
         "watch": "npx esbuild app.tsx --outdir=. --bundle --watch & npx esbuild background.ts --outdir=. --bundle --watch",
@@ -15,10 +15,11 @@
         "react-dom": "^17.0.2"
     },
     "devDependencies": {
-        "@types/firefox-webext-browser": "82.0.0",
-        "@types/react": "^17.0.11",
-        "@types/react-dom": "^17.0.8",
-        "esbuild": "^0.12.9",
-        "web-ext": "^6.2.0"
+        "@types/react": "^17.0.14",
+        "@types/react-dom": "^17.0.9",
+        "@types/webextension-polyfill": "^0.8.0",
+        "esbuild": "^0.12.15",
+        "web-ext": "^6.2.0",
+        "webextension-polyfill": "^0.8.0"
     }
 }

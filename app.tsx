@@ -1,3 +1,6 @@
+import Browser from "webextension-polyfill";
+// @ts-ignore
+const browser: Browser.Browser = require('webextension-polyfill');
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { Device } from './Device';

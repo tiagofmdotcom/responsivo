@@ -1,3 +1,7 @@
+import Browser from "webextension-polyfill";
+// @ts-ignore
+const browser: Browser.Browser = require('webextension-polyfill');
+
 /**
  * remove security headers allowing
  * site to be displayed in iframe
@@ -25,7 +29,7 @@ const storage = {
     }
 }
 
-function setupRemoveSecurityHeaders(tabURL: URL, tab: browser.tabs.Tab) {
+function setupRemoveSecurityHeaders(tabURL: URL, tab: Browser.Tabs.Tab) {
     browser.webRequest.onHeadersReceived.removeListener(removeSecurityHeaders);
 
     browser.webRequest.onHeadersReceived.addListener(
@@ -45,7 +49,7 @@ function rewriteUserAgentHeader(event: WebRequestOnBeforeSendHeadersEvent) {
     return { requestHeaders: event.requestHeaders };
 }
 
-function setupUserAgentSpoofing(tabURL: URL, tab: browser.tabs.Tab, storage: any) {
+function setupUserAgentSpoofing(tabURL: URL, tab: Browser.Tabs.Tab, storage: any) {
     browser.webRequest.onBeforeSendHeaders.removeListener(rewriteUserAgentHeader);
 
     browser.webRequest.onBeforeSendHeaders.addListener(rewriteUserAgentHeader,
