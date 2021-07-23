@@ -3,6 +3,9 @@
 	"version": "0.0.5",
 	"description": "A web extension. Displays multiple view widths at once.",
 	"manifest_version": 2,
+	"icons": {
+		"128": "128.png"
+	},
 	"permissions": [
 		"<all_urls>",
 		"activeTab",
