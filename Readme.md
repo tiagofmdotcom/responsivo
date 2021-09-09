@@ -3,6 +3,9 @@ A web extension. Displays multiple view widths at once.
 
 Inspired by Emmet Re:View.
 
+## Install
+- https://addons.mozilla.org/en-US/firefox/addon/responsivo/
+
 ## Build
 - npm i
 - npm run build && npm run package
