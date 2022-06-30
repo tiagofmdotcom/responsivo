@@ -18,7 +18,7 @@ export const Device = ({ width, location }: { width: number, location: string })
     const divRef = useRef<HTMLDivElement>();
 
     /**
-     * recreating iframes on every rerender because 
+     * recreating iframes on every rerender because
      * of inconsitent behaviour of event listeners
      * when following the react way
      */
@@ -28,8 +28,7 @@ export const Device = ({ width, location }: { width: number, location: string })
         iFrame.name = 'iframe';
         iFrame.setAttribute('loading', 'lazy');
         iFrame.width = width.toString();
-        iFrame.height = '500';
-        iFrame.scrolling = 'no';
+        iFrame.height = '10000';
         iFrame.src = location;
         divRef.current.appendChild(iFrame);
         addEventListeners(iFrame);
@@ -39,7 +38,8 @@ export const Device = ({ width, location }: { width: number, location: string })
         const intervalHandle = setInterval(() => {
             try {
                 const borderColor = iFrame.contentWindow.document.body.scrollWidth > parseInt(iFrame.width) ? 'red' : 'black';
-                const style = `height: ${iFrame.contentWindow.document.body.scrollHeight}px; border: 1px solid ${borderColor};`;
+                // NYI set iframe height to contentWindow.document height
+                const style = `border: 1px solid ${borderColor};`;
                 iFrame.setAttribute('style', style);
             } catch {
                 clearInterval(intervalHandle);
