@@ -1,3 +1,5 @@
+⚠🍴Forked from https://codeberg.org/michael.lill/responsivo
+
 # responsivo
 A web extension. Displays multiple view widths at once.
 
